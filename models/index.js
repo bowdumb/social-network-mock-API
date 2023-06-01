@@ -1,5 +1,3 @@
-const Thought = require('./Thought');
-const User = require('./User');
-const reactionSchema = require('./reactionSchema');
+const { Thought, User, reactionSchema } = require('../models');
 
-module.exports = { Studen, Course };
+module.exports = { Thought, User, reactionSchema };
