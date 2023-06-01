@@ -15,8 +15,7 @@ const getAllThoughts = async (req, res) => {
 // Controller function to get a single thought
 const getThoughtById = async (req, res) => {
   try {
-    const { thoughtId } = req.params;
-    const thought = await Thought.findById(thoughtId).populate('username', 'username');
+    const thought = await Thought.findById(req.params.id).populate('username', 'username');
 
     if (!thought) {
       return res.status(404).json({ message: 'Thought not found' });
@@ -25,7 +24,7 @@ const getThoughtById = async (req, res) => {
     res.json(thought);
   } catch (err) {
     console.error(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: 'Failed to get thought' });
   }
 };
 
@@ -51,23 +50,18 @@ const createThought = async (req, res) => {
 // Controller function to update a thought
 const updateThought = async (req, res) => {
   try {
-    const { thoughtId } = req.params;
-    const { thoughtText } = req.body;
-
-    const thought = await Thought.findByIdAndUpdate(
-      thoughtId,
-      { thoughtText },
-      { new: true }
-    );
+    const thought = await Thought.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!thought) {
-      return res.status(404).json({ message: 'Thought not found' });
+      return res.status(404).json({ error: 'Thought not found' });
     }
 
     res.json(thought);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json(err);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update thought' });
   }
 };
 
