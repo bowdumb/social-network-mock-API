@@ -84,7 +84,7 @@ const deleteThought = async (req, res) => {
 // Controller function to create a reaction for a thought
 const createReaction = async (req, res) => {
   try {
-    const { thoughtId } = req.params.id;
+    const { thoughtId } = req.params;
     const { reactionBody, username } = req.body;
 
     const thought = await Thought.findByIdAndUpdate(
