@@ -68,27 +68,23 @@ const updateThought = async (req, res) => {
 // Controller function to delete a thought
 const deleteThought = async (req, res) => {
   try {
-    const { thoughtId } = req.params;
-
-    const thought = await Thought.findByIdAndDelete(thoughtId);
+    const thought = await Thought.findByIdAndDelete(req.params.id);
 
     if (!thought) {
       return res.status(404).json({ message: 'Thought not found' });
     }
 
-    await User.findByIdAndUpdate(thought.userId, { $pull: { thoughts: thought._id } });
-
     res.json({ message: 'Thought deleted successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: 'Failed to delete thought' });
   }
 };
 
 // Controller function to create a reaction for a thought
 const createReaction = async (req, res) => {
   try {
-    const { thoughtId } = req.params;
+    const { thoughtId } = req.params.id;
     const { reactionBody, username } = req.body;
 
     const thought = await Thought.findByIdAndUpdate(
