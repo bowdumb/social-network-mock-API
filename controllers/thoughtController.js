@@ -110,20 +110,24 @@ const removeReaction = async (req, res) => {
     const { thoughtId } = req.params;
     const { reactionId } = req.body;
 
-    const thought = await Thought.findByIdAndUpdate(
-      thoughtId,
-      { $pull: { reactions: { _id: reactionId } } },
-      { new: true }
-    );
+    const thought = await Thought.findById(thoughtId);
 
     if (!thought) {
       return res.status(404).json({ message: 'Thought not found' });
     }
 
-    res.json(thought);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json(err);
+    // Checks if the thought's reactions array contains the reactionId. If it exists, use the Mongoose 'pull' method
+    // to remove the reaction with that particular _id from the array. After it's removed, the thought is saved
+    // to the database.
+    if (thought.reactions.some(reaction => reaction._id.toString() === reactionId)) {
+      thought.reactions.pull(reactionId);
+      await thought.save();
+    }
+
+    res.status(200).json({ message: 'Reaction successfully removed!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Reaction could not be removed.' });
   }
 };
 
