@@ -43,6 +43,7 @@ const thoughtSchema = new Schema(
     username: {
       type: String,
       required: true,
+      ref: 'User', // Reference the User model
     },
     reactions: [reactionSchema],
   },
@@ -57,6 +58,17 @@ const thoughtSchema = new Schema(
 
 thoughtSchema.virtual('reactionCount').get(function () {
   return this.reactions.length;
+});
+
+thoughtSchema.post('remove', async function (doc, next) {
+  try {
+    const user = await this.model('User').findById(doc.username);
+    user.thoughts.pull(doc._id);
+    await user.save();
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const Thought = model('Thought', thoughtSchema);

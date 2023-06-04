@@ -15,7 +15,7 @@ const getAllThoughts = async (req, res) => {
 // Controller function to get a single thought
 const getThoughtById = async (req, res) => {
   try {
-    const thought = await Thought.findById(req.params.id).populate('username', 'username');
+    const thought = await Thought.findById(req.params.id);
 
     if (!thought) {
       return res.status(404).json({ message: 'Thought not found' });
@@ -56,12 +56,12 @@ const updateThought = async (req, res) => {
     });
 
     if (!thought) {
-      return res.status(404).json({ error: 'Thought not found' });
+      return res.status(404).json({ error: 'Error: thought not found' });
     }
 
     res.json(thought);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update thought' });
+    res.status(500).json({ error: 'Error: failed to update thought' });
   }
 };
 
@@ -71,13 +71,13 @@ const deleteThought = async (req, res) => {
     const thought = await Thought.findByIdAndDelete(req.params.id);
 
     if (!thought) {
-      return res.status(404).json({ message: 'Thought not found' });
+      return res.status(404).json({ message: 'Error: thought not found' });
     }
 
     res.json({ message: 'Thought deleted successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to delete thought' });
+    res.status(500).json({ error: 'Error: failed to delete thought' });
   }
 };
 
@@ -94,7 +94,7 @@ const createReaction = async (req, res) => {
     );
 
     if (!thought) {
-      return res.status(404).json({ message: 'Thought not found' });
+      return res.status(404).json({ message: 'Error: thought not found' });
     }
 
     res.json(thought);
@@ -113,7 +113,7 @@ const removeReaction = async (req, res) => {
     const thought = await Thought.findById(thoughtId);
 
     if (!thought) {
-      return res.status(404).json({ message: 'Thought not found' });
+      return res.status(404).json({ message: 'Error: thought not found' });
     }
 
     // Checks if the thought's reactions array contains the reactionId. If it exists, use the Mongoose 'pull' method
@@ -127,7 +127,7 @@ const removeReaction = async (req, res) => {
     res.status(200).json({ message: 'Reaction successfully removed!' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Reaction could not be removed.' });
+    res.status(500).json({ error: 'Error: reaction could not be removed' });
   }
 };
 

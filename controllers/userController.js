@@ -7,7 +7,7 @@ const getAllUsers = async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get users' });
+    res.status(500).json({ error: 'Error: could not get users' });
   }
 };
 
@@ -16,11 +16,11 @@ const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Error:user not found' });
     }
     res.json(user);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get user' });
+    res.status(500).json({ error: 'Error: could not get user' });
   }
 };
 
@@ -30,7 +30,7 @@ const createUser = async (req, res) => {
     const user = await User.create(req.body);
     res.status(201).json(user);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create user' });
+    res.status(500).json({ error: 'Error: failed to create user' });
   }
 };
 
@@ -42,7 +42,7 @@ const updateUser = async (req, res) => {
       runValidators: true,
     });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Error: user not found' });
     }
     res.json(user);
   } catch (error) {
@@ -55,11 +55,11 @@ const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Error: user not found' });
     }
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete user' });
+    res.status(500).json({ error: 'Error: failed to delete user' });
   }
 };
 
@@ -70,16 +70,3 @@ module.exports = {
   updateUser,
   deleteUser,
 };
-
-
-
-
-
-
-// module.exports = {
-    //   getAllUsers,
-    //   getUserById,
-    //   createUser,
-    //   updateUser,
-    //   deleteUser,
-    // };
