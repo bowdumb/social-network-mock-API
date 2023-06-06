@@ -116,13 +116,20 @@ const removeReaction = async (req, res) => {
       return res.status(404).json({ message: 'Error: thought not found' });
     }
 
-    // Checks if the thought's reactions array contains the reactionId. If it exists, use the Mongoose 'pull' method
-    // to remove the reaction with that particular _id from the array. After it's removed, the thought is saved
-    // to the database.
-    if (thought.reactions.some(reaction => reaction._id.toString() === reactionId)) {
-      thought.reactions.pull(reactionId);
-      await thought.save();
+    // Find the index of the reaction with the matching reactionId
+    const reactionIndex = thought.reactions.findIndex(
+      (reaction) => reaction.reactionId.toString() === reactionId
+    );
+
+    if (reactionIndex === -1) {
+      return res.status(404).json({ message: 'Error: reaction not found' });
     }
+
+    // Remove the reaction from the array using the index
+    thought.reactions.splice(reactionIndex, 1);
+
+    // Save the updated thought
+    await thought.save();
 
     res.status(200).json({ message: 'Reaction successfully removed!' });
   } catch (error) {
